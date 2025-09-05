@@ -1,6 +1,7 @@
 package com.qwer.pages.web;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -8,11 +9,12 @@ import org.testng.Assert;
 
 import com.qwer.base.BasePage;
 import com.qwer.driver.DriverFactory;
+import com.qwer.utils.WebElementUtils;
 
 public class LoginPage extends BasePage {
 	
 	@FindBy(xpath = "//span[contains(text(), 'Login')]/parent::button") 
-	private WebElement btnLogin;
+	private WebElement btnLogin;	
 	
 	@FindBy(xpath = "//span[contains(text(), 'Register')]/parent::button") 
 	private WebElement btnRegister;
@@ -32,7 +34,7 @@ public class LoginPage extends BasePage {
 	@FindBy(xpath = "//form[@id = 'login-form']//button[text() = 'Login']")
 	private WebElement btnLoginF;
 	
-	String errMesWrongPass = "//div[contains(@data-testid, 'toast-content')]";
+	String toastMess = "//div[contains(@data-testid, 'toast-content')]";
 	
 	@FindBy(xpath = "//div[contains(text(), 'Email')]/following-sibling::div//div[@class = 'v-messages']")
 	private WebElement errMesInvalidEmail;
@@ -49,18 +51,17 @@ public class LoginPage extends BasePage {
 	@FindBy(xpath = "//button[text()= 'Resend Link']")
 	private WebElement btnResendLink;
 	
+	@FindBy (xpath = "//label[@for = 'checkbox-signup']")
+	private WebElement checkboxConfirm;
+	
 	public LoginPage(){
 		this.driver = DriverFactory.getDriver();
 		PageFactory.initElements(driver, this);		
 	}
 	
-	public void login(String email, String password) {
-		txtEmail.clear();
-		txtEmail.sendKeys(email);
-		txtPassword.clear();
-		txtPassword.sendKeys(password);
-//		setText(txtEmail, email);
-//		setText(txtPassword, password);
+	public void login(String email, String password) {		
+		setText(txtEmail, email);
+		setText(txtPassword, password);
 		btnLoginF.click();
 	}	
 	
@@ -70,8 +71,8 @@ public class LoginPage extends BasePage {
 		} 		
 	}
 	
-	public String getErrMessWrongPass() {
-		By byErrMesWrongPass  = By.xpath(errMesWrongPass);
+	public String getToatMessage() {
+		By byErrMesWrongPass  = By.xpath(toastMess);
 		Assert.assertTrue(wait.waitForElementInvisible(byErrMesWrongPass));
 		
 		wait.pause(1);
@@ -87,7 +88,8 @@ public class LoginPage extends BasePage {
 	}
 	
 	public void setText(WebElement element, String text) {
-		element.clear();
+		element.sendKeys(Keys.CONTROL + "a");
+		element.sendKeys(Keys.DELETE);
 		element.sendKeys(text);
 	}
 	
@@ -101,8 +103,38 @@ public class LoginPage extends BasePage {
 	}
 	
 	public boolean isResendLinkDisplyed() {
-		return isDisplayed(By.xpath("//button[text()= 'Resend Link']"));
-		
+		return isDisplayed(By.xpath("//button[text()= 'Resend Link']"));		
+	}
+	
+	public void isToastMessNotDisplayed() {
+		wait.waitForElementInvisible(By.xpath(toastMess));
+	}
+	
+	public void clickResendLink() {
+		WebElementUtils webElementUtils = new WebElementUtils(DriverFactory.getDriver());
+		webElementUtils.jsClick(btnResendLink);
+	}
+	
+	/***Register Area****************/
+	public void clickRegiterButton() {
+		btnRegister.click();
+	}
+	
+	public void register(String username, String email, String password) {
+		setText(txtUsername, username);
+		setText(txtEmail, email);
+		setText(txtPassword, password);
+	}
+	
+	public void clickCheckboxConfirm() {
+		checkboxConfirm.click();
+	}
+	
+	//strColor: text-red/text-primary
+	//key: One numeric/8-32 characters/One lower & upper case letter
+	public boolean isTextDisplayCorrectly(String strColor, String key) {
+		String lblText = "//p[contains(@class, '%s') and contains(text(), '%s')]";
+		return isDisplayed(By.xpath(lblText));		
 	}
 	
 	

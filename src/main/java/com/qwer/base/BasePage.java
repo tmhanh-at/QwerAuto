@@ -48,6 +48,15 @@ public class BasePage {
         }
     }
 
+    protected boolean isNotDisplayed(By locator) {
+    	try {
+            return wait.waitForElementInvisible(locator);
+        } catch (Exception e) {
+            return false;
+        }
+    	
+    }
+    
     // Mở URL
     public void openUrl(String url) {
         driver.get(url);

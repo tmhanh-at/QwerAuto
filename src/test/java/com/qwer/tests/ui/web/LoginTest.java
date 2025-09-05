@@ -4,6 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.qwer.base.BaseTest;
+import com.qwer.pages.web.HomePage;
 
 public class LoginTest extends BaseTest{
 	
@@ -11,7 +12,8 @@ public class LoginTest extends BaseTest{
 	private String expectedMessInvalidEmail = "Invalid Email.";
 	private String expectedMessRequired = "Required";
 	private String expectedMessVerified = "Your account has not been verified yet, please verify before logging in.";	
-	
+	private String expectedMessResendLink = "We just resent. Please check your email!";
+	private String expectedMessClickMultible = "Failed with too many attempts. Try again after 1 minutes.";
 	
 	@Test (priority = 1)
 	public void loginFailWithInvalidInfo() {		
@@ -25,7 +27,7 @@ public class LoginTest extends BaseTest{
 	public void loginFailWithWrongPass() {		
 		loginPage.login("tmhanh@gmail.com", "123456a@Aa");	
 		
-		Assert.assertEquals(loginPage.getErrMessWrongPass(), expectedMessWrongPass);
+		Assert.assertEquals(loginPage.getToatMessage(), expectedMessWrongPass);
 	}
 	
 	@Test (priority = 3)
@@ -35,7 +37,7 @@ public class LoginTest extends BaseTest{
 		Assert.assertEquals(loginPage.getErrMessInvalidEmail(), expectedMessInvalidEmail);
 	}	
 	
-	@Test (priority = 5)
+	@Test (priority = 4)
 	public void loginFailNotVerifyEmailYet() {
 		//send api dang ky tk -> login -> verify popup show and message on popup
 		loginPage.login("nttien@gmail.com", "123456a@A");
@@ -43,13 +45,27 @@ public class LoginTest extends BaseTest{
 		Assert.assertTrue(loginPage.isDisplayPopupVeriry());
 		Assert.assertTrue(loginPage.isResendLinkDisplyed());
 		Assert.assertEquals(loginPage.getMessVerifyAccount() ,expectedMessVerified);	
+		
+		loginPage.clickResendLink();
+		Assert.assertEquals(loginPage.getToatMessage(), expectedMessResendLink);
 	}
 	
 	@Test (priority = 4)
+	public void loginFailPolicy() {
+		//send api dang ky tk -> login -> verify popup show and message on popup
+		loginPage.login("nttien@gmail.com", "123456a@A");				
+		loginPage.clickResendLink();
+		loginPage.isToastMessNotDisplayed();
+		loginPage.login("nttien@gmail.com", "123456a@A");				
+		loginPage.clickResendLink();
+		Assert.assertEquals(loginPage.getToatMessage(), expectedMessClickMultible);
+	}
+	
+	@Test (priority = 6)
 	public void loginSuccess() {				
 		loginPage.login("tmhanh@gmail.com", "123456a@A");
-		
-		Assert.assertEquals(loginPage.getPageTitle(), "Qwer - Anonymous & Instant Crypto Casino");	
+		HomePage homePage = new HomePage();
+		Assert.assertTrue(homePage.isDisplayNameProfile());	
 	}
 	
 }

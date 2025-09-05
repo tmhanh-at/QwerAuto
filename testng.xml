@@ -4,11 +4,8 @@
         <parameter name="browser" value="chrome"/>
         <classes>
             <class name="com.qwer.tests.ui.web.LoginTest">
-            	<methods>           	
-            		<include name="loginFailNotVerifyEmailYet"></include>
-            		
-            	</methods>
-            	          	</class>	
+            	
+            </class>	
         </classes>
     </test>  
 </suite>
