@@ -10,8 +10,7 @@ public class LoginTest extends BaseTest{
 	private String expectedMessWrongPass = "Email or password is incorrect.";
 	private String expectedMessInvalidEmail = "Invalid Email.";
 	private String expectedMessRequired = "Required";
-	private String expectedMessVerified = "Your account has not been verified yet, please verify before logging in.";
-	
+	private String expectedMessVerified = "Your account has not been verified yet, please verify before logging in.";	
 	
 	
 	@Test (priority = 1)
