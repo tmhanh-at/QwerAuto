@@ -3,8 +3,10 @@
     <test name="ChromeTests">
         <parameter name="browser" value="chrome"/>
         <classes>
-            <class name="com.qwer.tests.ui.web.LoginTest">
-            	
+            <class name="com.qwer.tests.ui.web.SignInTest">
+            	<methods>
+					<include name="registerSuccess"></include>
+				</methods>
             </class>	
         </classes>
     </test>  

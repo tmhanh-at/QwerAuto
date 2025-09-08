@@ -1,7 +1,11 @@
 package com.qwer.pages.web;
 
+import java.util.NoSuchElementException;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -14,10 +18,7 @@ import com.qwer.utils.WebElementUtils;
 public class LoginPage extends BasePage {
 	
 	@FindBy(xpath = "//span[contains(text(), 'Login')]/parent::button") 
-	private WebElement btnLogin;	
-	
-	@FindBy(xpath = "//span[contains(text(), 'Register')]/parent::button") 
-	private WebElement btnRegister;
+	private WebElement btnLogin;		
 	
 	@FindBy(xpath = "//input[contains(@placeholder, 'Enter email')]") 
 	private WebElement txtEmail;
@@ -26,15 +27,10 @@ public class LoginPage extends BasePage {
 	private WebElement txtPassword;
 	
 	@FindBy(xpath = "//input[contains(@placeholder, 'Enter username')]") 
-	private WebElement txtUsername;
-	
-	@FindBy(id = "checkbox-signup") 
-	private WebElement clbCheckBoxSignUp;	
+	private WebElement txtUsername;	
 	
 	@FindBy(xpath = "//form[@id = 'login-form']//button[text() = 'Login']")
-	private WebElement btnLoginF;
-	
-	String toastMess = "//div[contains(@data-testid, 'toast-content')]";
+	private WebElement btnLoginF;	
 	
 	@FindBy(xpath = "//div[contains(text(), 'Email')]/following-sibling::div//div[@class = 'v-messages']")
 	private WebElement errMesInvalidEmail;
@@ -51,34 +47,39 @@ public class LoginPage extends BasePage {
 	@FindBy(xpath = "//button[text()= 'Resend Link']")
 	private WebElement btnResendLink;
 	
-	@FindBy (xpath = "//label[@for = 'checkbox-signup']")
-	private WebElement checkboxConfirm;
+//	public LoginPage(WebDriver driver){
+////		this.driver = DriverFactory.getDriver();
+////		PageFactory.initElements(driver, this);			
+//		super(driver);
+//	}
 	
-	public LoginPage(){
-		this.driver = DriverFactory.getDriver();
-		PageFactory.initElements(driver, this);		
-	}
-	
-	public void login(String email, String password) {		
+	public void login(String email, String password) {			
 		setText(txtEmail, email);
 		setText(txtPassword, password);
 		btnLoginF.click();
 	}	
 	
-	public void clickLoginButton() {
+	public void clickLogin() {
 		if(btnLogin.isDisplayed()) {
 			btnLogin.click();
-		} 		
+		}
 	}
 	
-	public String getToatMessage() {
-		By byErrMesWrongPass  = By.xpath(toastMess);
-		Assert.assertTrue(wait.waitForElementInvisible(byErrMesWrongPass));
-		
-		wait.pause(1);
-		return driver.findElement(byErrMesWrongPass).getText();
-	}
-		
+	public boolean waitAndClickIfVisible(By locator, int timeoutInSeconds) {
+        try {           
+            WebElement element = wait.waitForElementClickable(locator);            
+            element.click();
+            System.out.println("Clicked element: " + locator.toString());
+            return true;
+        } catch (TimeoutException e) {
+            System.out.println("Element not visible within " + timeoutInSeconds + "s: " + locator.toString());
+            return false;
+        } catch (NoSuchElementException e) {
+            System.out.println("Element not found: " + locator.toString());
+            return false;
+        }
+    }
+			
 	public String getErrMessInvalidEmail() {
 		return errMesInvalidEmail.getText();
 	}
@@ -106,36 +107,16 @@ public class LoginPage extends BasePage {
 		return isDisplayed(By.xpath("//button[text()= 'Resend Link']"));		
 	}
 	
-	public void isToastMessNotDisplayed() {
-		wait.waitForElementInvisible(By.xpath(toastMess));
-	}
+	
 	
 	public void clickResendLink() {
 		WebElementUtils webElementUtils = new WebElementUtils(DriverFactory.getDriver());
 		webElementUtils.jsClick(btnResendLink);
 	}
 	
-	/***Register Area****************/
-	public void clickRegiterButton() {
-		btnRegister.click();
-	}
 	
-	public void register(String username, String email, String password) {
-		setText(txtUsername, username);
-		setText(txtEmail, email);
-		setText(txtPassword, password);
+	public void pause(int time) {
+		wait.pause(time);
 	}
-	
-	public void clickCheckboxConfirm() {
-		checkboxConfirm.click();
-	}
-	
-	//strColor: text-red/text-primary
-	//key: One numeric/8-32 characters/One lower & upper case letter
-	public boolean isTextDisplayCorrectly(String strColor, String key) {
-		String lblText = "//p[contains(@class, '%s') and contains(text(), '%s')]";
-		return isDisplayed(By.xpath(lblText));		
-	}
-	
 	
 }

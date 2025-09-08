@@ -63,22 +63,22 @@ public class WebElementUtils {
 		actions.dragAndDrop(source, target).perform();
 	}
 
-	// 🔹 Hover mouse
+
 	public void hover(WebElement element) {
 		actions.moveToElement(element).perform();
 	}
 
-	// 🔹 Nhập text bằng JS (bypass sendKeys nếu bị chặn)
+
 	public void jsSetText(WebElement element, String text) {
 		js.executeScript("arguments[0].value='" + text + "';", element);
 	}
 
-	// 🔹 Get attribute
+
 	public String getAttribute(WebElement element, String attrName) {
 		return element.getAttribute(attrName);
 	}
 
-	// 🔹 Clear text box bằng JS
+
 	public void jsClear(WebElement element) {
 		js.executeScript("arguments[0].value='';", element);
 	}

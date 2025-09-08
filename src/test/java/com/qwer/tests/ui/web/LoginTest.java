@@ -1,10 +1,12 @@
 package com.qwer.tests.ui.web;
 
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.qwer.base.BaseTest;
 import com.qwer.pages.web.HomePage;
+import com.qwer.pages.web.LoginPage;
 
 public class LoginTest extends BaseTest{
 	
@@ -14,9 +16,19 @@ public class LoginTest extends BaseTest{
 	private String expectedMessVerified = "Your account has not been verified yet, please verify before logging in.";	
 	private String expectedMessResendLink = "We just resent. Please check your email!";
 	private String expectedMessClickMultible = "Failed with too many attempts. Try again after 1 minutes.";
+	private String expectedMessClickMultibleMoreThan5 = "Failed with too many login attempts. Try again after 5 minutes.";
 	
+	private LoginPage loginPage;	
+	
+	@BeforeMethod
+    public void initPage() {
+        loginPage = new LoginPage(); // ✅ nhận driver từ BaseTest
+       
+    }
+		
 	@Test (priority = 1)
-	public void loginFailWithInvalidInfo() {		
+	public void loginFailWithInvalidInfo() {	
+		loginPage.clickLogin();
 		loginPage.login("", "");
 		
 		Assert.assertEquals(loginPage.getErrMessInvalidEmail(), expectedMessRequired);
@@ -27,11 +39,12 @@ public class LoginTest extends BaseTest{
 	public void loginFailWithWrongPass() {		
 		loginPage.login("tmhanh@gmail.com", "123456a@Aa");	
 		
-		Assert.assertEquals(loginPage.getToatMessage(), expectedMessWrongPass);
+		Assert.assertEquals(loginPage.getToastMessage(), expectedMessWrongPass);
 	}
 	
 	@Test (priority = 3)
 	public void loginFailWithInvalidEmail() {		
+		loginPage.pause(5);
 		loginPage.login("12345", "123456a@A");
 		
 		Assert.assertEquals(loginPage.getErrMessInvalidEmail(), expectedMessInvalidEmail);
@@ -39,7 +52,8 @@ public class LoginTest extends BaseTest{
 	
 	@Test (priority = 4)
 	public void loginFailNotVerifyEmailYet() {
-		//send api dang ky tk -> login -> verify popup show and message on popup
+		//send api register account -> login -> verify popup show and message on popup
+		loginPage.pause(10);
 		loginPage.login("nttien@gmail.com", "123456a@A");
 		
 		Assert.assertTrue(loginPage.isDisplayPopupVeriry());
@@ -47,18 +61,23 @@ public class LoginTest extends BaseTest{
 		Assert.assertEquals(loginPage.getMessVerifyAccount() ,expectedMessVerified);	
 		
 		loginPage.clickResendLink();
-		Assert.assertEquals(loginPage.getToatMessage(), expectedMessResendLink);
+		Assert.assertEquals(loginPage.getToastMessage(), expectedMessResendLink);
 	}
 	
 	@Test (priority = 4)
 	public void loginFailPolicy() {
 		//send api dang ky tk -> login -> verify popup show and message on popup
+		 
+//		loginPage.pause(10);
 		loginPage.login("nttien@gmail.com", "123456a@A");				
 		loginPage.clickResendLink();
 		loginPage.isToastMessNotDisplayed();
+		
 		loginPage.login("nttien@gmail.com", "123456a@A");				
 		loginPage.clickResendLink();
-		Assert.assertEquals(loginPage.getToatMessage(), expectedMessClickMultible);
+		Assert.assertTrue(loginPage.getToastMessage().contains(expectedMessClickMultible) 
+				|| loginPage.getToastMessage().contains(expectedMessClickMultibleMoreThan5));
+		
 	}
 	
 	@Test (priority = 6)

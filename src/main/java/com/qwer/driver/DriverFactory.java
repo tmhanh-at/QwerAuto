@@ -32,13 +32,11 @@ public class DriverFactory {
 		} else {
 			throw new IllegalArgumentException("Browser not supported: " + browser);
 		}
-
-		// Set cấu hình chung
+		
 		getDriver().manage().window().maximize();	
 		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(CommonContants.TIMEOUT));
 	}
 
-	// Quit driver
 	public static void quitDriver() {
 		if (getDriver() != null) {
 			getDriver().quit();
