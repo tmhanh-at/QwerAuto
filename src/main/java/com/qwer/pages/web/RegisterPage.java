@@ -1,16 +1,15 @@
 package com.qwer.pages.web;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.qwer.base.BasePage;
 import com.qwer.driver.DriverFactory;
+import com.qwer.utils.WaitHelper;
 
-public class SignInPage extends BasePage {
-
+public class RegisterPage extends BasePage {
 	@FindBy(xpath = "//span[contains(text(), 'Register')]/parent::button")
 	private WebElement btnRegister;
 
@@ -53,7 +52,7 @@ public class SignInPage extends BasePage {
 	private WebElement textWarningPassword;
 
 
-	public SignInPage() {
+	public RegisterPage() {
 		this.driver = DriverFactory.getDriver();
 		PageFactory.initElements(driver, this);
 	}
@@ -81,7 +80,7 @@ public class SignInPage extends BasePage {
 	// strColor: text-red/text-primary
 	// key: One numeric/8-32 characters/One lower & upper case letter
 	public boolean isTextDisplayCorrectly(String strColor, String key) {
-		wait.pause(1);		
+		WaitHelper.pause(1);		
 		String lblText = String.format("//p[contains(@class, '%s') and contains(text(), '%s')]", strColor, key);				
 		return isDisplayed(By.xpath(lblText));
 	}
@@ -105,5 +104,4 @@ public class SignInPage extends BasePage {
 	public String getErrorMessValidateConditions() {		
 		return getText(errMesInvalidConditions);
 	}
-
 }

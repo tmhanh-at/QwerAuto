@@ -80,7 +80,7 @@ public class LoginTest extends BaseTest{
 		
 	}
 	
-	@Test (priority = 6)
+	@Test (priority = 6, description = "Verify user can login succesfully with valid infor") 
 	public void loginSuccess() {				
 		loginPage.login("tmhanh@gmail.com", "123456a@A");
 		HomePage homePage = new HomePage();

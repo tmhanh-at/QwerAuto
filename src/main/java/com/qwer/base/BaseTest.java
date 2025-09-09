@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 
 import com.qwer.driver.DriverFactory;
+import com.qwer.contants.Contants;
 
 public class BaseTest {
 
@@ -16,7 +17,7 @@ public class BaseTest {
 	        DriverFactory.initDriver(browser);
 //	        DriverFactory.getDriver().get(CommonContants.BASE_URL);	     
 	        driver = DriverFactory.getDriver();
-	        DriverFactory.getDriver().get("https://crypto_n1:crypto@123@qwer.kingshaper.com");
+	        DriverFactory.getDriver().get("https://"+ Contants.USERNAME_AUTH + ":"+ Contants.PASSWORD_AUTH +"@qwer.kingshaper.com");
 	    }		 
 	    
 	    @AfterClass

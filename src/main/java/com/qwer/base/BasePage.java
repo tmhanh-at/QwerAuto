@@ -8,10 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 
-import com.qwer.contants.CommonContants;
+import com.qwer.contants.Contants;
 import com.qwer.driver.DriverFactory;
 import com.qwer.utils.WaitHelper;
 
@@ -22,16 +21,16 @@ public class BasePage {
 
 	public BasePage() {
 		this.driver = DriverFactory.getDriver();
-		PageFactory.initElements(driver, this); // Khởi tạo @FindBy
-		this.wait = new WaitHelper(driver, CommonContants.TIMEOUT);
+		PageFactory.initElements(driver, this); 
+		this.wait = new WaitHelper(driver, Contants.TIMEOUT);
 	}
 
-	// Click element
+	
 	protected void click(By locator) {
 		wait.waitForElementClickable(locator).click();
 	}
 
-	// Nhập text
+	
 	protected void setText(By locator, String text) {
 		WebElement element = wait.waitForElementPresent(locator);
 		element.clear();
@@ -44,12 +43,11 @@ public class BasePage {
 		element.sendKeys(text);
 	}
 
-	// Lấy text element
 	protected String getText(By locator) {
 		return wait.waitForElementPresent(locator).getText();
 	}
 
-	// Kiểm tra element hiển thị
+
 	protected boolean isDisplayed(By locator) {
 		try {
 			return wait.waitForElementPresent(locator).isDisplayed();
@@ -90,7 +88,7 @@ public class BasePage {
 	            .executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
 	}
 	
-	public void scrollToTextActions(WebElement element) {	   
+	protected void scrollToTextActions(WebElement element) {	   
 	    new Actions(DriverFactory.getDriver()).moveToElement(element).perform();
 	}
 	
@@ -98,7 +96,7 @@ public class BasePage {
 		By byErrMesWrongPass  = By.xpath("//div[contains(@data-testid, 'toast-content')]");
 		Assert.assertTrue(wait.waitForElementInvisible(byErrMesWrongPass));
 		
-		wait.pause(1);
+		WaitHelper.pause(1);
 		return driver.findElement(byErrMesWrongPass).getText();
 	}
 	

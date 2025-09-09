@@ -1,13 +1,15 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="AutomationSuite" parallel="tests" thread-count="1">
-    <test name="ChromeTests">
+<suite name="AutomationSuite" parallel="false">
+
+ 	<listeners>
+        <listener class-name="com.qwer.listeners.TestListener"/>
+    </listeners>
+    
+    <test name="Web Tests">
         <parameter name="browser" value="chrome"/>
         <classes>
-            <class name="com.qwer.tests.ui.web.SignInTest">
-            	<methods>
-					<include name="registerSuccess"></include>
-				</methods>
-            </class>	
+            <class name="com.qwer.tests.ui.web.SignInTest"></class> 
+            <class name="com.qwer.tests.ui.web.LoginTest"></class>	            	
         </classes>
     </test>  
 </suite>
