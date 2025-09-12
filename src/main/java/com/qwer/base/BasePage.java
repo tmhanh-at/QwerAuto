@@ -21,32 +21,24 @@ public class BasePage {
 
 	public BasePage() {
 		this.driver = DriverFactory.getDriver();
-		PageFactory.initElements(driver, this); 
+		PageFactory.initElements(driver, this);
 		this.wait = new WaitHelper(driver, Contants.TIMEOUT);
 	}
 
-	
 	protected void click(By locator) {
 		wait.waitForElementClickable(locator).click();
-	}
-
-	
-	protected void setText(By locator, String text) {
-		WebElement element = wait.waitForElementPresent(locator);
-		element.clear();
-		element.sendKeys(text);
 	}
 
 	protected void setText(WebElement element, String text) {
 		element.sendKeys(Keys.CONTROL + "a");
 		element.sendKeys(Keys.DELETE);
 		element.sendKeys(text);
+		element.sendKeys(Keys.TAB);
 	}
 
 	protected String getText(By locator) {
 		return wait.waitForElementPresent(locator).getText();
 	}
-
 
 	protected boolean isDisplayed(By locator) {
 		try {
@@ -62,8 +54,7 @@ public class BasePage {
 		} catch (Exception e) {
 			return false;
 		}
-
-	}	
+	}
 
 	protected void click(WebElement element) {
 		try {
@@ -71,40 +62,64 @@ public class BasePage {
 		} catch (ElementClickInterceptedException e) {
 			((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
 		}
-	}	
+	}
 
 	protected String getText(WebElement element) {
 		return wait.waitForVisible(element).getText();
 	}
 
 	protected void scrollToElement(WebElement element) {
-	    ((JavascriptExecutor) DriverFactory.getDriver())
-	            .executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
+		((JavascriptExecutor) DriverFactory.getDriver()).executeScript("arguments[0].scrollIntoView();", element);
 	}
-	
-	protected void scrollToElement(By locator) {
-	    WebElement element = DriverFactory.getDriver().findElement(locator);
-	    ((JavascriptExecutor) DriverFactory.getDriver())
-	            .executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
-	}
-	
-	protected void scrollToTextActions(WebElement element) {	   
-	    new Actions(DriverFactory.getDriver()).moveToElement(element).perform();
-	}
-	
-	public String getToastMessage() {		
-		By byErrMesWrongPass  = By.xpath("//div[contains(@data-testid, 'toast-content')]");
-		Assert.assertTrue(wait.waitForElementInvisible(byErrMesWrongPass));
-		
+
+	public String getToastMessage() {
+		By byToastMessage = By.xpath("//div[contains(@data-testid, 'toast-content')]");
+		Assert.assertTrue(wait.waitForElementInvisible(byToastMessage));
+
 		WaitHelper.pause(1);
-		return driver.findElement(byErrMesWrongPass).getText();
+		return driver.findElement(byToastMessage).getText();
 	}
-	
+
 	public void isToastMessNotDisplayed() {
 		wait.waitForElementInvisible(By.xpath("//div[contains(@data-testid, 'toast-content')]"));
 	}
-	
-	public boolean isDisplayedText(String text) {	
+
+	public boolean isDisplayedText(String text) {
 		return isDisplayed(By.xpath("//*[contains(text(), '" + text + "')]"));
+	}
+
+	protected void scrollToElement(By locator) {
+		WebElement element = DriverFactory.getDriver().findElement(locator);
+		((JavascriptExecutor) DriverFactory.getDriver())
+				.executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
+	}
+
+	protected void scrollToTextActions(WebElement element) {
+		new Actions(DriverFactory.getDriver()).moveToElement(element).perform();
+	}
+
+	public void scrollToBottom() {
+		JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+		js.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+	}
+
+	// Scroll lên đầu trang
+	public void scrollToTop() {
+		JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+		js.executeScript("window.scrollTo(0, 0);");
+	}
+
+	public void pause() {
+		WaitHelper.pause(1);
+	}
+
+	public void clickByJS(WebElement element) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("arguments[0].click();", element);
+	}
+
+	public void clickIconClose() {
+		String strIconClose = "//*[contains(@class, 'icon-close')]";
+		click(By.xpath(strIconClose));
 	}
 }
