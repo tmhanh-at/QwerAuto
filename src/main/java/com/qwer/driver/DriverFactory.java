@@ -7,7 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.qwer.contants.CommonContants;
+import com.qwer.contants.Contants;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -34,7 +34,7 @@ public class DriverFactory {
 		}
 		
 		getDriver().manage().window().maximize();	
-		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(CommonContants.TIMEOUT));
+		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(Contants.TIMEOUT));
 	}
 
 	public static void quitDriver() {
